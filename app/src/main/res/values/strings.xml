@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">MyStoryAppComposeHilt</string>
+    <string name="name">name</string>
+    <string name="enter_your_email">Enter email</string>
+    <string name="email">email</string>
+    <string name="enter_your_password">Enter password</string>
+    <string name="password">Password</string>
+    <string name="hide_password">Hide password</string>
+    <string name="show_password">show password</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="capture_image">Capture image</string>
+    <string name="permission_denied">Permission denied</string>
+    <string name="pick_image">Gallery</string>
+    <string name="story_app">Story App</string>
+    <string name="add_story">Add Story</string>
+    <string name="story_location">Stories location</string>
 </resources>
