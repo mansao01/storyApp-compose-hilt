@@ -2,6 +2,12 @@ package com.mansao.mystoryappcomposehilt.ui.screen.login
 
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -107,6 +114,19 @@ fun LoginComponent(
     val keyboardController = LocalSoftwareKeyboardController.current
     var passwordVisibility by remember { mutableStateOf(false) }
 
+    val transition = rememberInfiniteTransition(label = "transition")
+
+    val scale by transition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.5f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1000),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "scale"
+    )
+
+
 
     Column(
         modifier
@@ -120,7 +140,8 @@ fun LoginComponent(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.news_svgrepo_com),
-                contentDescription = "logo"
+                contentDescription = "logo",
+                modifier = Modifier.scale(scale)
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
