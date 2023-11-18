@@ -2,21 +2,26 @@ package com.mansao.mystoryappcomposehilt.ui.screen.login
 
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -34,6 +39,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -41,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -50,12 +57,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mansao.mystoryappcompose.ui.component.LoadingScreen
 import com.mansao.mystoryappcomposehilt.R
 import com.mansao.mystoryappcomposehilt.ui.common.LoginUiState
+import kotlin.math.roundToInt
 
 
 @Composable
@@ -96,7 +105,7 @@ fun LoginScreen(
 
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun LoginComponent(
     loginViewModel: LoginViewModel,
@@ -115,10 +124,13 @@ fun LoginComponent(
     var passwordVisibility by remember { mutableStateOf(false) }
 
     val transition = rememberInfiniteTransition(label = "transition")
+    val offsetX by remember { mutableFloatStateOf(0f) }
+
+    val animatableOffset = remember { Animatable(0f) }
 
     val scale by transition.animateFloat(
         initialValue = 1f,
-        targetValue = 1.5f,
+        targetValue = 1.2f,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 1000),
             repeatMode = RepeatMode.Reverse
@@ -126,8 +138,20 @@ fun LoginComponent(
         label = "scale"
     )
 
-
-
+    LaunchedEffect(animatableOffset) {
+        animatableOffset.animateTo(
+            targetValue = 50f,
+            animationSpec = infiniteRepeatable(
+                animation = keyframes {
+                    durationMillis = 2000
+                    0f at 0 with LinearEasing
+                    50f at 1000 with LinearEasing
+                    0f at 2000 with LinearEasing
+                },
+                repeatMode = RepeatMode.Reverse
+            )
+        )
+    }
     Column(
         modifier
             .fillMaxSize()
@@ -144,13 +168,25 @@ fun LoginComponent(
                 modifier = Modifier.scale(scale)
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = stringResource(R.string.story_app),
-                fontSize = 26.sp,
+            Box(
                 modifier = Modifier
-                    .padding(horizontal = 32.dp)
+                    .offset {
+                        IntOffset(offsetX.roundToInt(), 0)
+                    }
+                    .graphicsLayer {
+                        translationX = animatableOffset.value.dp.toPx()
+                    }
+            ) {
+                Text(
+                    text = stringResource(R.string.story_app),
+                    fontSize = 26.sp,
+                    modifier = Modifier
+                        .padding(horizontal = 32.dp)
 
-            )
+                )
+            }
+
+
             Text(
                 text = stringResource(R.string.login),
                 fontSize = 26.sp,
@@ -248,6 +284,7 @@ fun LoginComponent(
             }
         }
     }
+
 }
 
 private fun isEmailValid(email: String): Boolean {
