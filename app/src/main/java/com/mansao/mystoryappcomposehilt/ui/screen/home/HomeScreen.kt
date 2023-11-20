@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -60,8 +61,8 @@ fun HomeScreen(
     navigateToLogin: () -> Unit,
     navigateToAdd: () -> Unit,
     navigateToDetail: () -> Unit,
-    navigateToMap: () -> Unit
-
+    navigateToMap: () -> Unit,
+    navigateSetting: () -> Unit,
 ) {
     val isLogin by authViewModel.loginState.collectAsState()
     if (isLogin) {
@@ -83,7 +84,8 @@ fun HomeScreen(
                 navigateToDetail = navigateToDetail,
                 sharedViewModel = sharedViewModel,
                 username = uiState.username,
-                navigateToMap = navigateToMap
+                navigateToMap = navigateToMap,
+                navigateSetting = navigateSetting
             )
         }
 
@@ -103,7 +105,8 @@ fun HomeScreenContent(
     navigateToDetail: () -> Unit,
     sharedViewModel: SharedViewModel,
     username: String,
-    navigateToMap: () -> Unit
+    navigateToMap: () -> Unit,
+    navigateSetting: () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -112,7 +115,8 @@ fun HomeScreenContent(
                 navigateToLogin = { navigateToLogin() },
                 homeViewModel = homeViewModel,
                 username = username,
-                navigateToMap = navigateToMap
+                navigateToMap = navigateToMap,
+                navigateSetting = navigateSetting
             )
         },
         floatingActionButton = { MyFloatingActionButton(navigateToAdd = { navigateToAdd() }) },
@@ -185,6 +189,7 @@ fun HomeTopBar(
     scrollBehavior: TopAppBarScrollBehavior,
     navigateToLogin: () -> Unit,
     navigateToMap: () -> Unit,
+    navigateSetting: () -> Unit,
     homeViewModel: HomeViewModel,
     username: String
 ) {
@@ -197,6 +202,11 @@ fun HomeTopBar(
                 navigateToMap()
             }) {
                 Icon(imageVector = Icons.Default.Map, contentDescription = "Maps")
+            }
+            IconButton(onClick = {
+                navigateSetting()
+            }) {
+                Icon(imageVector = Icons.Default.Settings, contentDescription = "setting")
             }
             IconButton(onClick = {
                 context.imageLoader.memoryCache?.clear()

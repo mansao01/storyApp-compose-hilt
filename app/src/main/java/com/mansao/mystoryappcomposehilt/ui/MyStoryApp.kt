@@ -24,6 +24,7 @@ import com.mansao.mystoryappcomposehilt.ui.screen.maps.MapScreen
 import com.mansao.mystoryappcomposehilt.ui.screen.maps.MapsViewModel
 import com.mansao.mystoryappcomposehilt.ui.screen.register.RegisterScreen
 import com.mansao.mystoryappcomposehilt.ui.screen.register.RegisterViewModel
+import com.mansao.mystoryappcomposehilt.ui.screen.setting.SettingScreen
 
 @RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,6 +71,9 @@ fun MyStoryApp(
                 },
                 navigateToMap = {
                     navController.navigate(Screen.Map.route)
+                },
+                navigateSetting = {
+                    navController.navigate(Screen.Setting.route)
                 }
             )
         }
@@ -117,6 +121,10 @@ fun MyStoryApp(
                     navController.navigate(Screen.Home.route)
                 }
             )
+        }
+
+        composable(Screen.Setting.route){
+            SettingScreen()
         }
     }
 
