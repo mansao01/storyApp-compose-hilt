@@ -1,5 +1,9 @@
 package com.mansao.mystoryappcomposehilt.ui.common
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.paging.PagingData
 import com.mansao.mystoryappcompose.data.network.response.GetStoriesWithLocationResponse
 import com.mansao.mystoryappcompose.data.network.response.ListStoryItem
@@ -51,4 +55,13 @@ sealed interface AddUiState {
 
 }
 
+sealed interface SettingUiState {
+    data class SettingUiState(
+        val isDarkMode: Boolean = false,
+        val title: String = if (isDarkMode) "Dark Mode" else "Light Mode",
+        val icon: ImageVector =
+            if (isDarkMode) Icons.Default.DarkMode else Icons.Default.LightMode
+    )
+
+}
 

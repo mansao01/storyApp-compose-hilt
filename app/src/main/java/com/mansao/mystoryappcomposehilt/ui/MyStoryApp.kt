@@ -33,7 +33,8 @@ fun MyStoryApp(
     navController: NavHostController = rememberNavController(),
     startDestination: String,
     location: LocationModel,
-    locationEnabled: Boolean
+    locationEnabled: Boolean,
+    onDarkModeChange: (Boolean) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val sharedViewModel: SharedViewModel = viewModel()
@@ -123,8 +124,10 @@ fun MyStoryApp(
             )
         }
 
-        composable(Screen.Setting.route){
-            SettingScreen()
+        composable(Screen.Setting.route) {
+            SettingScreen(onDarkModeChange = onDarkModeChange, navigateToHome = {
+                navController.navigate(Screen.Home.route)
+            })
         }
     }
 

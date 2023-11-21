@@ -1,6 +1,7 @@
 package com.mansao.mystoryappcomposehilt.data.preferences
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -24,6 +25,29 @@ class StoryPreferences @Inject constructor(@ApplicationContext val context: Cont
     private val accessTokenKey = stringPreferencesKey("access_token")
     private val username = stringPreferencesKey("username")
     private val isLoginState = booleanPreferencesKey("is_login")
+
+    val isDarkMode: Flow<Boolean> = dataStore.data
+        .catch {
+            if (it is IOException) {
+                Log.e(TAG, "Error reading preferences", it)
+                emit(emptyPreferences())
+            } else throw it
+        }.map { preferences ->
+            preferences[IS_DARK_MODE] ?: true
+
+        }
+
+    suspend fun saveThemePreferences(isDarkMode: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[IS_DARK_MODE] = isDarkMode
+        }
+    }
+
+    private companion object {
+        val IS_DARK_MODE = booleanPreferencesKey("is_dark_mode")
+        const val TAG = "ProfilePreferencesRepo"
+    }
+
 
     suspend fun saveAccessToken(token: String) {
         dataStore.edit { preferences ->

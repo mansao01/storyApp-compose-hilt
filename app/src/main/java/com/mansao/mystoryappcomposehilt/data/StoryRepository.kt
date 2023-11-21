@@ -43,6 +43,9 @@ interface StoryRepository {
     suspend fun getAccessToken(): String?
     suspend fun clearTokens()
     suspend fun clearUsername()
+    suspend fun saveThemePreferences(isDarkMode: Boolean)
+
+     var isDarkMode: Flow<Boolean>
 }
 
 
@@ -51,6 +54,8 @@ class StoryRepositoryImpl @Inject constructor(
     private val storyDatabase: StoryDatabase,
     private val storyPreferences: StoryPreferences
 ) : StoryRepository {
+    override var isDarkMode: Flow<Boolean> = storyPreferences.isDarkMode
+
     override suspend fun register(name: String, email: String, password: String): RegisterResponse {
         return apiService.register(name, email, password)
     }
@@ -111,4 +116,8 @@ class StoryRepositoryImpl @Inject constructor(
     override suspend fun clearTokens() = storyPreferences.clearTokens()
 
     override suspend fun clearUsername() = storyPreferences.clearUsername()
+
+    override suspend fun saveThemePreferences(isDarkMode: Boolean) {
+        return storyPreferences.saveThemePreferences(isDarkMode)
+    }
 }

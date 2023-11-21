@@ -19,12 +19,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -35,6 +37,7 @@ import com.google.android.gms.tasks.OnTokenCanceledListener
 import com.mansao.mystoryappcompose.data.local.model.LocationModel
 import com.mansao.mystoryappcomposehilt.ui.AuthViewModel
 import com.mansao.mystoryappcomposehilt.ui.MyStoryApp
+import com.mansao.mystoryappcomposehilt.ui.screen.setting.SettingViewModel
 import com.mansao.mystoryappcomposehilt.ui.theme.MyStoryAppComposeHiltTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -48,11 +51,14 @@ class MainActivity : ComponentActivity() {
         LocationModel(0.0, 0.0)
     )
     private var isLocationEnabled by mutableStateOf(false)
+
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MyStoryAppComposeHiltTheme {
+            val settingViewModel: SettingViewModel = hiltViewModel()
+            var isDarkMode = settingViewModel.uiState.collectAsState().value.isDarkMode
+            MyStoryAppComposeHiltTheme(darkTheme = isDarkMode) {
                 // A surface container using the 'background' color from the theme
                 val context = LocalContext.current
                 SetupLocationServices(context)
@@ -65,7 +71,10 @@ class MainActivity : ComponentActivity() {
                     MyStoryApp(
                         startDestination = startDestination.value,
                         location = locationModel,
-                        locationEnabled = isLocationEnabled
+                        locationEnabled = isLocationEnabled,
+                        onDarkModeChange = { newDarkMode ->
+                            isDarkMode = newDarkMode
+                        }
                     )
                 }
             }
